@@ -18,7 +18,7 @@ try:
     with open('$HISTORY_FILE', 'r') as f:
         data = json.load(f)
         entries = []
-        for entry in data["entries"][-10:]: # Get last 10 entries
+        for entry in reversed(data["entries"][-10:]): # Get last 10 entries, newest first
             content = entry["content"]
             # Create preview by taking first 30 chars and removing newlines
             preview = content.replace('\n', ' ').replace('"', "'")[:30]
