@@ -27,8 +27,25 @@ When you start the script, it listens for clipboard activity. Every time you cop
 **2. Cloning the repository**
 
 -   Open the terminal and run the following command to clone the repository
+
     ```
     git clone https://github.com/LorincziMatyas12/macbook-clipboard-history.git
+    ```
+
+-   Open the **clipboard-history.sh** file and change the path to where you cloned the repository. You can use the text editor of your choice.
+
+    ```
+    HISTORY_FILE="$HOME/path/to/macos-clipboard-history/.env/.clipboard_history.json"
+
+    PID_FILE="$HOME/path/to/macos-clipboard-history/.env/.clipboard_listener_pid"
+    ```
+
+    "**/path/to/**" If you cloned the repository to **Documents** it should look something like this:
+
+    ```
+    HISTORY_FILE="$HOME/Documents/macos-clipboard-history/.env/.clipboard_history.json"
+
+    PID_FILE="$HOME/Documents/macos-clipboard-history/.env/.clipboard_listener_pid"
     ```
 
 **3. Using the program (script)**
