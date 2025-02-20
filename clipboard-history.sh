@@ -1,74 +1,81 @@
 #!/bin/bash
-HISTORY_FILE="$HOME/path/to/macos-clipboard-history/.env/.clipboard_history.json"
-PID_FILE="$HOME/path/to/macos-clipboard-history/.env/.clipboard_listener_pid"
+# FILENAME: clipboard-history.sh
+# AUTHOR: Lorinczi Matyas
+# DESCRIPTION: A simple clipboard history tool for macOS using shell scripts and AppleScript.
+
+# Get the directory where the script is located
+SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+HISTORY_FILE="$HOME/macos-clipboard-history/.env/.clipboard_history.json"
+PID_FILE="$HOME/macos-clipboard-history/.env/.clipboard_listener_pid"
+DEBUG_LOG="/tmp/clipboard_debug.log"
+
+# Debug function
+debug_log() {
+    echo "$(date '+%Y-%m-%d %H:%M:%S') - $1" >> "$DEBUG_LOG"
+}
 
 # Function to show history with timestamps
 show_history() {
+    debug_log "Starting show_history function"
+    
     # Validate JSON before showing history
     if [[ ! -f "$HISTORY_FILE" ]] || [[ ! -s "$HISTORY_FILE" ]]; then
+        debug_log "History file is empty or doesn't exist"
         osascript -e 'display dialog "Clipboard history is empty." buttons {"OK"}'
         return
     fi
 
-    # Process JSON and create formatted entries directly for AppleScript
-    ENTRIES=$(python3 << EOF
-import json
-import sys
-try:
-    with open('$HISTORY_FILE', 'r') as f:
-        data = json.load(f)
-        entries = []
-        for entry in reversed(data["entries"][-10:]): # Get last 10 entries, newest first
-            content = entry["content"]
-            # Create preview by taking first 30 chars and removing newlines
-            preview = content.replace('\n', ' ').replace('"', "'")[:30]
-            if len(content) > 30:
-                preview += "..."
-            # Create a clean entry for display, escape quotes for AppleScript
-            formatted = f"{entry['timestamp']} | {preview}".replace('"', '\\"')
-            entries.append(formatted)
-        # Join entries with commas for AppleScript list
-        print('","'.join(entries))
-except Exception as e:
-    print("")
-EOF
-)
+    # Process JSON and create formatted entries
+    debug_log "Running format_entries.py"
+    ENTRIES=$(python3 "$SCRIPT_DIR/format_entries.py" "$HISTORY_FILE")
+    debug_log "Entries received: $ENTRIES"
 
     if [[ -z "$ENTRIES" ]]; then
+        debug_log "No entries found in history"
         osascript -e 'display dialog "No valid entries in clipboard history." buttons {"OK"}'
         return
     fi
 
     # Show dialog with formatted entries
-    CHOSEN=$(osascript << EOF
-set entryList to {"$ENTRIES"}
-set selectedItem to choose from list entryList with prompt "Select clipboard entry:" default items {}
-return selectedItem
-EOF
-)
+    debug_log "Running select_entry.applescript"
+    CHOSEN=$(osascript "$SCRIPT_DIR/select_entry.applescript" "$ENTRIES")
+    debug_log "User selected: $CHOSEN"
 
     if [[ -n "$CHOSEN" && "$CHOSEN" != "false" ]]; then
         # Extract timestamp from the chosen entry
-        TIMESTAMP=$(echo "$CHOSEN" | cut -d'|' -f1 | xargs)
+        TIMESTAMP=$(echo "$CHOSEN" | sed 's/^"//' | sed 's/"$//' | cut -d'|' -f1 | xargs)
+        debug_log "Extracted timestamp: $TIMESTAMP"
+
         # Get the full content
-        FULL_CONTENT=$(python3 << EOF
-import json
-try:
-    with open('$HISTORY_FILE', 'r') as f:
-        data = json.load(f)
-        timestamp = '$TIMESTAMP'
-        for entry in data['entries']:
-            if entry['timestamp'] == timestamp:
-                print(entry['content'])
-                break
-except Exception as e:
-    print("")
-EOF
-)
+        debug_log "Running get_content.py"
+        FULL_CONTENT=$(python3 "$SCRIPT_DIR/get_content.py" "$HISTORY_FILE" "$TIMESTAMP" 2>/tmp/get_content_error.log)
+        debug_log "Retrieved content length: ${#FULL_CONTENT}"
+        
         if [[ -n "$FULL_CONTENT" ]]; then
-            echo -n "$FULL_CONTENT" | pbcopy
-            osascript -e 'display notification "Copied to clipboard!"'
+            debug_log "Copying content to clipboard"
+            printf '%s' "$FULL_CONTENT" | pbcopy
+            
+            # Verify the clipboard content
+            VERIFY_COPY=$(pbpaste)
+            debug_log "Verifying clipboard content length: ${#VERIFY_COPY}"
+            
+            if [[ -n "$VERIFY_COPY" ]]; then
+                debug_log "Content successfully copied to clipboard"
+                osascript -e 'display notification "Copied to clipboard!"'
+            else
+                debug_log "Failed to copy to clipboard"
+                ERROR_LOG=$(cat /tmp/get_content_error.log)
+                debug_log "Error from get_content.py: $ERROR_LOG"
+                osascript -e 'display dialog "Failed to copy to clipboard" buttons {"OK"}'
+            fi
+        else
+            debug_log "No content retrieved from get_content.py"
+            ERROR_LOG=$(cat /tmp/get_content_error.log)
+            debug_log "Error from get_content.py: $ERROR_LOG"
+            osascript -e 'display dialog "Failed to retrieve content" buttons {"OK"}'
         fi
+    else
+        debug_log "No selection made or selection cancelled"
     fi
 }
 
@@ -96,22 +103,7 @@ if [[ "$1" == "--start" ]]; then
                 # Add new entry using Python
                 timestamp=$(date "+%Y-%m-%d %H:%M:%S")
                 content=$(echo "$CURRENT_CONTENT" | python3 -c 'import json,sys; print(json.dumps(sys.stdin.read().strip()))')
-                python3 << EOF
-import json
-import os
-try:
-    with open('$HISTORY_FILE', 'r') as f:
-        data = json.load(f)
-except:
-    data = {"entries": []}
-new_entry = {
-    "timestamp": "$timestamp",
-    "content": ${content}
-}
-data["entries"].append(new_entry)
-with open('$HISTORY_FILE', 'w') as f:
-    json.dump(data, f, ensure_ascii=False, indent=2)
-EOF
+                python3 "$SCRIPT_DIR/add_entry.py" "$HISTORY_FILE" "$timestamp" "$content"
                 LAST_CONTENT="$CURRENT_CONTENT"
             fi
             sleep 0.2
