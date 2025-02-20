@@ -5,77 +5,53 @@
 
 # Get the directory where the script is located
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-HISTORY_FILE="$HOME/macos-clipboard-history/.env/.clipboard_history.json"
-PID_FILE="$HOME/macos-clipboard-history/.env/.clipboard_listener_pid"
-DEBUG_LOG="/tmp/clipboard_debug.log"
+HISTORY_FILE="$HOME/path/to/macos-clipboard-history/.env/.clipboard_history.json"
+PID_FILE="$HOME/path/to/macos-clipboard-history/.env/.clipboard_listener_pid"
 
-# Debug function
-debug_log() {
-    echo "$(date '+%Y-%m-%d %H:%M:%S') - $1" >> "$DEBUG_LOG"
-}
 
 # Function to show history with timestamps
 show_history() {
-    debug_log "Starting show_history function"
     
     # Validate JSON before showing history
     if [[ ! -f "$HISTORY_FILE" ]] || [[ ! -s "$HISTORY_FILE" ]]; then
-        debug_log "History file is empty or doesn't exist"
         osascript -e 'display dialog "Clipboard history is empty." buttons {"OK"}'
         return
     fi
 
     # Process JSON and create formatted entries
-    debug_log "Running format_entries.py"
     ENTRIES=$(python3 "$SCRIPT_DIR/format_entries.py" "$HISTORY_FILE")
-    debug_log "Entries received: $ENTRIES"
 
     if [[ -z "$ENTRIES" ]]; then
-        debug_log "No entries found in history"
         osascript -e 'display dialog "No valid entries in clipboard history." buttons {"OK"}'
         return
     fi
 
     # Show dialog with formatted entries
-    debug_log "Running select_entry.applescript"
     CHOSEN=$(osascript "$SCRIPT_DIR/select_entry.applescript" "$ENTRIES")
-    debug_log "User selected: $CHOSEN"
 
     if [[ -n "$CHOSEN" && "$CHOSEN" != "false" ]]; then
         # Extract timestamp from the chosen entry
         TIMESTAMP=$(echo "$CHOSEN" | sed 's/^"//' | sed 's/"$//' | cut -d'|' -f1 | xargs)
-        debug_log "Extracted timestamp: $TIMESTAMP"
 
         # Get the full content
-        debug_log "Running get_content.py"
         FULL_CONTENT=$(python3 "$SCRIPT_DIR/get_content.py" "$HISTORY_FILE" "$TIMESTAMP" 2>/tmp/get_content_error.log)
-        debug_log "Retrieved content length: ${#FULL_CONTENT}"
         
         if [[ -n "$FULL_CONTENT" ]]; then
-            debug_log "Copying content to clipboard"
             printf '%s' "$FULL_CONTENT" | pbcopy
             
             # Verify the clipboard content
             VERIFY_COPY=$(pbpaste)
-            debug_log "Verifying clipboard content length: ${#VERIFY_COPY}"
             
             if [[ -n "$VERIFY_COPY" ]]; then
-                debug_log "Content successfully copied to clipboard"
                 osascript -e 'display notification "Copied to clipboard!"'
             else
-                debug_log "Failed to copy to clipboard"
                 ERROR_LOG=$(cat /tmp/get_content_error.log)
-                debug_log "Error from get_content.py: $ERROR_LOG"
                 osascript -e 'display dialog "Failed to copy to clipboard" buttons {"OK"}'
             fi
         else
-            debug_log "No content retrieved from get_content.py"
             ERROR_LOG=$(cat /tmp/get_content_error.log)
-            debug_log "Error from get_content.py: $ERROR_LOG"
             osascript -e 'display dialog "Failed to retrieve content" buttons {"OK"}'
         fi
-    else
-        debug_log "No selection made or selection cancelled"
     fi
 }
 
