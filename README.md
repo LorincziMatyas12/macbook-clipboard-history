@@ -19,9 +19,10 @@ When you start the script, it listens for clipboard activity. Every time you cop
     ```
     /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
     ```
--   Install Git with Homebrew
+-   Install Git with Homebrew, and check the version
     ```
     brew install git
+    git version
     ```
 
 **2. Cloning the repository**
@@ -50,10 +51,22 @@ When you start the script, it listens for clipboard activity. Every time you cop
 
 **3. Using the program (script)**
 
--   Run the following command to grant execute permissions. You olny have to do this once.
+-   Make shure that python3 is installed on your laptop. If not follow the instructions on the official site. https://www.python.org/downloads/macos/
+-   You can also install python3 with Homebrew. Chech the version with the following command
+    ```
+    brew install python
+    python --version
+    ```
+
+-   Run the following command to grant execute permissions to your user. You olny have to do this once. (Navigate to the project folder with **"cd"** command, than you don't have to include the **"/path/to/"** in the following commands)
     ```
     chmod u+x /path/to/clipboard-history.sh
+    chmod u+x /path/to/add_entry.py
+    chmod u+x /path/to/format_entries.py
+    chmod u+x /path/to/get_content.py
+    chmod u+x /path/to/select_entry.applescript
     ```
+    You can list all the files in the project folder with **"ls -l"**, you should see something like **"-rwxr--r--"** permissions for the python and script files.
 -   Running the script: Each time you restart your computer, you will need to start the program manually.
     ```
     ./path/to/clipboard-history.sh --start
@@ -88,4 +101,6 @@ When you start the script, it listens for clipboard activity. Every time you cop
 -   Check the checkbox, then double-click the darker **"none"** box.
 -   Press **Command + Shift + V** to set the shortcut, then click **Done**.
 
-##
+**5. Possible fixes for errors**
+-   Grant **"Full Disk Access"** for Terminal and Automator in your system settings. Open **System Settings** and navigate to **Privacy & Security > Full Disk Access** click on the **"+"** button and select Automator and Terminal
+-   
