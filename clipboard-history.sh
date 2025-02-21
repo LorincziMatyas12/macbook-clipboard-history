@@ -2,16 +2,20 @@
 # FILENAME: clipboard-history.sh
 # AUTHOR: Lorinczi Matyas
 # DESCRIPTION: A simple clipboard history tool for macOS using shell scripts and AppleScript.
+# USAGE: Run the script with 
+#   --start to start the clipboard listener
+#   --show to show the history
+#   --stop to stop the listener.
+# Running detached in the bacground so you can close the terminal. 
+# nohup /path/to/macos-clipboard-history/clipboard-history.sh --start &
 
 # Get the directory where the script is located
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 HISTORY_FILE="$HOME/path/to/macos-clipboard-history/.env/.clipboard_history.json"
 PID_FILE="$HOME/path/to/macos-clipboard-history/.env/.clipboard_listener_pid"
 
-
 # Function to show history with timestamps
 show_history() {
-    
     # Validate JSON before showing history
     if [[ ! -f "$HISTORY_FILE" ]] || [[ ! -s "$HISTORY_FILE" ]]; then
         osascript -e 'display dialog "Clipboard history is empty." buttons {"OK"}'

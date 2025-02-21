@@ -60,8 +60,8 @@ When you start the script, it listens for clipboard activity. Every time you cop
 
 -   Run the following command to grant execute permissions to your user. You olny have to do this once. (Navigate to the project folder with **"cd"** command, than you don't have to include the **"/path/to/"** in the following commands)
     ```
-    chmod u+x /path/to/clipboard-history.sh
     chmod u+x /path/to/add_entry.py
+    chmod u+x /path/to/clipboard-history.sh
     chmod u+x /path/to/format_entries.py
     chmod u+x /path/to/get_content.py
     chmod u+x /path/to/select_entry.applescript
@@ -70,6 +70,10 @@ When you start the script, it listens for clipboard activity. Every time you cop
 -   Running the script: Each time you restart your computer, you will need to start the program manually.
     ```
     ./path/to/clipboard-history.sh --start
+    ```
+-   Run this command so you can close the terminal afterwards
+    ```
+    nohup /path/to/macos-clipboard-history/clipboard-history.sh --start &
     ```
 -   To see the clipboard window run the following command:
     ```
