@@ -104,4 +104,3 @@ When you start the script, it listens for clipboard activity. Every time you cop
 
 **5. Possible fixes for errors**
 -   Grant **"Full Disk Access"** for Terminal and Automator in your system settings. Open **System Settings** and navigate to **Privacy & Security > Full Disk Access** click on the **"+"** button and select Automator and Terminal
--   
