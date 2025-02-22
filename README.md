@@ -33,7 +33,7 @@ When you start the script, it listens for clipboard activity. Every time you cop
     git clone https://github.com/LorincziMatyas12/macbook-clipboard-history.git
     ```
 
--   Open the **clipboard-history.sh** file and change the path to where you cloned the repository. You can use the text editor of your choice.
+-   Open the **clipboard_history.sh** file and change the path to where you cloned the repository. You can use the text editor of your choice.
 
     ```
     HISTORY_FILE="$HOME/path/to/macos-clipboard-history/.env/.clipboard_history.json"
@@ -60,28 +60,25 @@ When you start the script, it listens for clipboard activity. Every time you cop
 
 -   Run the following command to grant execute permissions to your user. You olny have to do this once. (Navigate to the project folder with **"cd"** command, than you don't have to include the **"/path/to/"** in the following commands)
     ```
-    chmod u+x /path/to/add_entry.py
-    chmod u+x /path/to/clipboard-history.sh
-    chmod u+x /path/to/format_entries.py
-    chmod u+x /path/to/get_content.py
-    chmod u+x /path/to/select_entry.applescript
+    chmod u+x /path/to/clipboard_history.sh
     ```
-    You can list all the files in the project folder with **"ls -l"**, you should see something like **"-rwxr--r--"** permissions for the python and script files.
+    You can list all the files in the project folder with **"ls -l"**, you should see something like **"-rwxr--r--"** permissions.
+    
 -   Running the script: Each time you restart your computer, you will need to start the program manually.
     ```
-    ./path/to/clipboard-history.sh --start
+    ./path/to/clipboard_history.sh --start
     ```
 -   Run this command so you can close the terminal afterwards
     ```
-    nohup /path/to/macos-clipboard-history/clipboard-history.sh --start &
+    nohup /path/to/macos-clipboard-history/clipboard_history.sh --start &
     ```
 -   To see the clipboard window run the following command:
     ```
-    ./path/to/clipboard-history.sh --show
+    ./path/to/clipboard_history.sh --show
     ```
 -   Stopping the script
     ```
-    ./path/to/clipboard-history.sh --stop
+    ./path/to/clipboard_history.sh --stop
     ```
 
 **4. Creating a Shortcut to View Clipboard History**
@@ -96,7 +93,7 @@ When you start the script, it listens for clipboard activity. Every time you cop
     -   **Pass input:** `to stdin`
 -   Paste the following command into the script box:
     ```bash
-    /path/to/clipboard-history.sh --show
+    /path/to/clipboard_history.sh --show
     ```
 -   Click the **Play** button to test it. You should see the clipboard history window.
 -   Save the workflow.
