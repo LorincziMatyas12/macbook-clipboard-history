@@ -9,8 +9,8 @@
 # Running detached in the background so you can close the terminal. 
 # nohup /path/to/macos-clipboard-history/clipboard_history.sh --start &
 
-PID_FILE="$HOME/macos-clipboard-history/.env/.clipboard_listener_pid"
-HISTORY_FOLDER="$HOME/macos-clipboard-history/.env"
+PID_FILE="$HOME/path/to/macos-clipboard-history/.env/.clipboard_listener_pid"
+HISTORY_FOLDER="$HOME/path/to/macos-clipboard-history/.env"
 MAX_HISTORY=10
 
 # Create necessary directories if they don't exist
