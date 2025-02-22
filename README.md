@@ -16,11 +16,11 @@ When you start the script, it listens for clipboard activity. Every time you cop
 **1. If Git is not already installed on your system, follow the instructions below. Otherwise, you can skip this step.**
 
 -   Install Homebrew with this command or visit their website for further information (https://brew.sh)
-    ```
+    ```console
     /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
     ```
 -   Install Git with Homebrew, and check the version
-    ```
+    ```console
     brew install git
     git version
     ```
@@ -29,13 +29,13 @@ When you start the script, it listens for clipboard activity. Every time you cop
 
 -   Open the terminal and run the following command to clone the repository
 
-    ```
+    ```console
     git clone https://github.com/LorincziMatyas12/macbook-clipboard-history.git
     ```
 
 -   Open the **clipboard_history.sh** file and change the path to where you cloned the repository. You can use the text editor of your choice.
 
-    ```
+    ```sh
     HISTORY_FILE="$HOME/path/to/macos-clipboard-history/.env/.clipboard_history.json"
 
     PID_FILE="$HOME/path/to/macos-clipboard-history/.env/.clipboard_listener_pid"
@@ -43,7 +43,7 @@ When you start the script, it listens for clipboard activity. Every time you cop
 
     "**/path/to/**" If you cloned the repository to **Documents** it should look something like this:
 
-    ```
+    ```sh
     HISTORY_FILE="$HOME/Documents/macos-clipboard-history/.env/.clipboard_history.json"
 
     PID_FILE="$HOME/Documents/macos-clipboard-history/.env/.clipboard_listener_pid"
@@ -53,31 +53,31 @@ When you start the script, it listens for clipboard activity. Every time you cop
 
 -   Make shure that python3 is installed on your laptop. If not follow the instructions on the official site. https://www.python.org/downloads/macos/
 -   You can also install python3 with Homebrew. Chech the version with the following command
-    ```
+    ```console
     brew install python
     python --version
     ```
 
 -   Run the following command to grant execute permissions to your user. You olny have to do this once. (Navigate to the project folder with **"cd"** command, than you don't have to include the **"/path/to/"** in the following commands)
-    ```
+    ```console
     chmod u+x /path/to/clipboard_history.sh
     ```
     You can list all the files in the project folder with **"ls -l"**, you should see something like **"-rwxr--r--"** permissions.
     
 -   Running the script: Each time you restart your computer, you will need to start the program manually.
-    ```
+    ```console
     ./path/to/clipboard_history.sh --start
     ```
 -   Run this command so you can close the terminal afterwards
-    ```
+    ```console
     nohup /path/to/macos-clipboard-history/clipboard_history.sh --start &
     ```
 -   To see the clipboard window run the following command:
-    ```
+    ```console
     ./path/to/clipboard_history.sh --show
     ```
 -   Stopping the script
-    ```
+    ```console
     ./path/to/clipboard_history.sh --stop
     ```
 
@@ -92,7 +92,7 @@ When you start the script, it listens for clipboard activity. Every time you cop
     -   **Shell:** `/bin/bash`
     -   **Pass input:** `to stdin`
 -   Paste the following command into the script box:
-    ```bash
+    ```console
     /path/to/clipboard_history.sh --show
     ```
 -   Click the **Play** button to test it. You should see the clipboard history window.
