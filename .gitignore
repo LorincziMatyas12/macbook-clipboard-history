@@ -1,2 +1,4 @@
 smaller-code-versions/
 .DS_Store
+.vscode/
+.idea/
