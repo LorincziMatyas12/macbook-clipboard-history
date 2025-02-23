@@ -1,5 +1,5 @@
 #!/bin/bash
-# FILENAME: clipboard-history.sh
+# FILENAME: clipboard_history.sh
 # AUTHOR: Lorinczi Matyas
 # DESCRIPTION: A simple clipboard history tool for macOS using shell scripts and AppleScript.
 # USAGE: Run the script with 
@@ -9,9 +9,9 @@
 # Running detached in the background so you can close the terminal. 
 # nohup /path/to/macos-clipboard-history/clipboard_history.sh --start &
 
-PID_FILE="$HOME/path/to/macos-clipboard-history/.env/.clipboard_listener_pid"
-HISTORY_FOLDER="$HOME/path/to/macos-clipboard-history/.env"
-MAX_HISTORY=10
+PID_FILE="$HOME/.clipboard_history/.listener_pid"
+HISTORY_FOLDER="$HOME/.clipboard_history/.history_files"
+MAX_HISTORY=20
 
 # Create necessary directories if they don't exist
 mkdir -p "$HISTORY_FOLDER"
@@ -50,9 +50,9 @@ show_history() {
         if [[ -f "${HISTORY_FOLDER}/${i}" ]]; then
             content=$(cat "${HISTORY_FOLDER}/${i}")
             # Truncate content for display and escape quotes
-            preview="${content:0:50}"
+            preview="${content:0:100}"
             preview="${preview//\"/\\\"}"
-            if [[ ${#content} -gt 50 ]]; then
+            if [[ ${#content} -gt 100 ]]; then
                 preview="${preview}..."
             fi
             history_items+=("$preview")
@@ -89,8 +89,8 @@ EOL
         for ((i=1; i<=MAX_HISTORY; i++)); do
             if [[ -f "${HISTORY_FOLDER}/${i}" ]]; then
                 content=$(cat "${HISTORY_FOLDER}/${i}")
-                preview="${content:0:50}"
-                if [[ ${#content} -gt 50 ]]; then
+                preview="${content:0:100}"
+                if [[ ${#content} -gt 100 ]]; then
                     preview="${preview}..."
                 fi
                 if [[ "$selection" == *"$preview"* ]]; then

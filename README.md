@@ -33,26 +33,11 @@ When you start the script, it listens for clipboard activity. Every time you cop
     git clone https://github.com/LorincziMatyas12/macbook-clipboard-history.git
     ```
 
--   Open the **clipboard_history.sh** file and change the path to where you cloned the repository. You can use the text editor of your choice.
-
-    ```
-    HISTORY_FILE="$HOME/path/to/macos-clipboard-history/.env/.clipboard_history.json"
-
-    PID_FILE="$HOME/path/to/macos-clipboard-history/.env/.clipboard_listener_pid"
-    ```
-
-    "**/path/to/**" If you cloned the repository to **Documents** it should look something like this:
-
-    ```
-    HISTORY_FILE="$HOME/Documents/macos-clipboard-history/.env/.clipboard_history.json"
-
-    PID_FILE="$HOME/Documents/macos-clipboard-history/.env/.clipboard_listener_pid"
-    ```
-
 **3. Using the program (script)**
 
 -   Make shure that python3 is installed on your laptop. If not follow the instructions on the official site. https://www.python.org/downloads/macos/
 -   You can also install python3 with Homebrew. Chech the version with the following command
+
     ```
     brew install python
     python --version
@@ -63,12 +48,7 @@ When you start the script, it listens for clipboard activity. Every time you cop
     chmod u+x /path/to/clipboard_history.sh
     ```
     You can list all the files in the project folder with **"ls -l"**, you should see something like **"-rwxr--r--"** permissions.
-    
 -   Running the script: Each time you restart your computer, you will need to start the program manually.
-    ```
-    ./path/to/clipboard_history.sh --start
-    ```
--   Run this command so you can close the terminal afterwards
     ```
     nohup /path/to/macos-clipboard-history/clipboard_history.sh --start &
     ```
@@ -103,5 +83,5 @@ When you start the script, it listens for clipboard activity. Every time you cop
 -   Press **Command + Shift + V** to set the shortcut, then click **Done**.
 
 **5. Possible fixes for errors**
+
 -   Grant **"Full Disk Access"** for Terminal and Automator in your system settings. Open **System Settings** and navigate to **Privacy & Security > Full Disk Access** click on the **"+"** button and select Automator and Terminal
--   
