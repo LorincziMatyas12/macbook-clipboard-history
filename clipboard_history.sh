@@ -1,5 +1,5 @@
 #!/bin/bash
-# FILENAME: clipboard-history.sh
+# FILENAME: clipboard_history.sh
 # AUTHOR: Lorinczi Matyas
 # DESCRIPTION: A simple clipboard history tool for macOS using shell scripts and AppleScript.
 # USAGE: Run the script with 
@@ -9,9 +9,10 @@
 # Running detached in the background so you can close the terminal. 
 # nohup /path/to/macos-clipboard-history/clipboard_history.sh --start &
 
-PID_FILE="$HOME/path/to/macos-clipboard-history/.env/.clipboard_listener_pid"
-HISTORY_FOLDER="$HOME/path/to/macos-clipboard-history/.env"
-MAX_HISTORY=10
+PID_FILE="$HOME/.clipboard_history/.listener_pid"
+HISTORY_FOLDER="$HOME/.clipboard_history/.history_files"
+APPLESCRIPT_FILE="$(dirname "$0")/create_history_ui.applescript"
+MAX_HISTORY=20
 
 # Create necessary directories if they don't exist
 mkdir -p "$HISTORY_FOLDER"
@@ -39,9 +40,6 @@ rotate_history() {
 
 # Function to show history with timestamps and handle selection
 show_history() {
-    # Create temporary AppleScript file
-    local temp_script="/tmp/clipboard_chooser.scpt"
-    
     # Create an array to store all valid items
     declare -a history_items
     
@@ -50,9 +48,9 @@ show_history() {
         if [[ -f "${HISTORY_FOLDER}/${i}" ]]; then
             content=$(cat "${HISTORY_FOLDER}/${i}")
             # Truncate content for display and escape quotes
-            preview="${content:0:50}"
+            preview="${content:0:100}"
             preview="${preview//\"/\\\"}"
-            if [[ ${#content} -gt 50 ]]; then
+            if [[ ${#content} -gt 100 ]]; then
                 preview="${preview}..."
             fi
             history_items+=("$preview")
@@ -65,32 +63,16 @@ show_history() {
         exit 0
     fi
     
-    # Build the AppleScript items list
-    local items=""
-    for item in "${history_items[@]}"; do
-        items="$items\"$item\", "
-    done
-    items=${items%, }  # Remove trailing comma and space
-    
-    # Create AppleScript directly
-    cat > "$temp_script" << EOL
-tell application "System Events"
-    activate
-    set theResponse to choose from list {${items}} with prompt "Latest clipboard content on top. \nSelect from the items below:" default items {item 1 of {${items}}}
-    return theResponse
-end tell
-EOL
-    
-    # Show dialog and get selection
-    local selection=$(osascript "$temp_script")
+    # Pass the items directly as arguments to the AppleScript
+    local selection=$(osascript "$APPLESCRIPT_FILE" "${history_items[@]}")
     
     # If user made a selection, find and copy the corresponding item
     if [[ "$selection" != "false" ]]; then
         for ((i=1; i<=MAX_HISTORY; i++)); do
             if [[ -f "${HISTORY_FOLDER}/${i}" ]]; then
                 content=$(cat "${HISTORY_FOLDER}/${i}")
-                preview="${content:0:50}"
-                if [[ ${#content} -gt 50 ]]; then
+                preview="${content:0:100}"
+                if [[ ${#content} -gt 100 ]]; then
                     preview="${preview}..."
                 fi
                 if [[ "$selection" == *"$preview"* ]]; then
@@ -100,8 +82,6 @@ EOL
             fi
         done
     fi
-    
-    rm "$temp_script"
 }
 
 # Start clipboard listener in background
@@ -136,6 +116,13 @@ if [[ "$1" == "--show" ]]; then
     exit 0
 fi
 
+if [[ "$1" == "--clear" ]]; then
+    rm -rf "$HISTORY_FOLDER"
+    mkdir -p "$HISTORY_FOLDER"
+    echo "Clipboard history cleared."
+    exit 0
+fi
+
 # Stop the clipboard listener
 if [[ "$1" == "--stop" ]]; then
     if [[ -f "$PID_FILE" ]]; then
@@ -149,5 +136,5 @@ if [[ "$1" == "--stop" ]]; then
 fi
 
 # Show usage if no valid argument is provided
-echo "Usage: $0 [--start|--show|--stop]"
+echo "Usage: $0 [--start|--clear|--show|--stop]"
 exit 1
