@@ -6,82 +6,106 @@
 
 This project was inspired by the Clipboard History (Clipboard Manager) feature in Microsoft Windows.
 
-## Functionatity
+## Functionality
 
 The core functionality is based on being able to view your MacOS clipboard history.
-When you start the script, it listens for clipboard activity. Every time you copy something using '**Command + C**', the script saves it. When you press '**Command + Shift + V**', a dialog pops up displaying the last 10 copied items. Click on the text you need, press '**Ok**' and then paste it using Command + V.
+
+When you start the script, it listens for clipboard activity. Every time you copy something using **Command + C**, the script saves it. When you press **Command + Shift + V**, a dialog pops up displaying the last 10 copied items. Click on the text you need, press **Ok** and then paste it using Command + V.
 
 ## Running it on your device
 
-**1. If Git is not already installed on your system, follow the instructions below. Otherwise, you can skip this step.**
+### 1. Installing Git
 
--   Install Homebrew with this command or visit their website for further information (https://brew.sh)
-    ```
-    /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-    ```
--   Install Git with Homebrew, and check the version
-    ```
-    brew install git
-    git version
-    ```
+If Git is not already installed on your system, follow the instructions below. Otherwise, you can skip this step.
 
-**2. Cloning the repository**
+- Install Homebrew with this command or visit their website for further information (<https://brew.sh>)
 
--   Open the terminal and run the following command to clone the repository
+```bash
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+```
 
-    ```
-    git clone https://github.com/LorincziMatyas12/macbook-clipboard-history.git
-    ```
+- Install Git with Homebrew, and check the version
 
-**3. Using the program (script)**
+```bash
+brew install git
+git version
+```
 
--   Make shure that python3 is installed on your laptop. If not follow the instructions on the official site. https://www.python.org/downloads/macos/
--   You can also install python3 with Homebrew. Chech the version with the following command
+### 2. Cloning the repository
 
-    ```
-    brew install python
-    python --version
-    ```
+- Open the terminal and run the following command to clone the repository
 
--   Run the following command to grant execute permissions to your user. You olny have to do this once. (Navigate to the project folder with **"cd"** command, than you don't have to include the **"/path/to/"** in the following commands)
-    ```
-    chmod u+x /path/to/clipboard_history.sh
-    ```
-    You can list all the files in the project folder with **"ls -l"**, you should see something like **"-rwxr--r--"** permissions.
--   Running the script: Each time you restart your computer, you will need to start the program manually.
-    ```
-    nohup /path/to/macos-clipboard-history/clipboard_history.sh --start &
-    ```
--   To see the clipboard window run the following command:
-    ```
-    ./path/to/clipboard_history.sh --show
-    ```
--   Stopping the script
-    ```
-    ./path/to/clipboard_history.sh --stop
-    ```
+```bash
+git clone https://github.com/LorincziMatyas12/macbook-clipboard-history.git
+```
 
-**4. Creating a Shortcut to View Clipboard History**
+### 3. Using the program (script)
 
--   Open the **Automator** app on your Mac.
--   Create a **Workflow**.
--   Add a **"Run Shell Script"** action to the workflow.
--   Ensure the following setting is applied in the workflow:
-    -   **"Workflow receives 'no input' in 'any application'"**
--   For **"Run Shell Script"**, set:
-    -   **Shell:** `/bin/bash`
-    -   **Pass input:** `to stdin`
--   Paste the following command into the script box:
-    ```bash
-    /path/to/clipboard_history.sh --show
-    ```
--   Click the **Play** button to test it. You should see the clipboard history window.
--   Save the workflow.
--   Open **System Settings > Keyboard > Keyboard Shortcuts...**
--   Navigate to **Services > General > Name_Of_The_Workflow**
--   Check the checkbox, then double-click the darker **"none"** box.
--   Press **Command + Shift + V** to set the shortcut, then click **Done**.
+- Make sure that python3 is installed on your laptop. If not follow the instructions on the official site: <https://www.python.org/downloads/macos/>
+- You can also install python3 with Homebrew. Check the version with the following command
 
-**5. Possible fixes for errors**
+```bash
+brew install python
+python --version
+```
 
--   Grant **"Full Disk Access"** for Terminal and Automator in your system settings. Open **System Settings** and navigate to **Privacy & Security > Full Disk Access** click on the **"+"** button and select Automator and Terminal
+- Run the following command to grant execute permissions to your user. You only have to do this once. (Navigate to the project folder with **cd** command, then you don't have to include the **/path/to/** in the following commands)
+
+```bash
+chmod u+x /path/to/clipboard_history.sh
+```
+
+You can list all the files in the project folder with **ls -l**, you should see something like **-rwxr--r--** permissions.
+
+- Running the script: Each time you restart your computer, you will need to start the program manually.
+
+```bash
+nohup /path/to/macos-clipboard-history/clipboard_history.sh --start &
+```
+
+- Clear your clipboard history:
+
+```bash
+./path/to/clipboard_history.sh --clear
+```
+
+- To see the clipboard window run the following command:
+
+```bash
+./path/to/clipboard_history.sh --show
+```
+
+- Stopping the script:
+
+```bash
+./path/to/clipboard_history.sh --stop
+```
+
+### 4. Creating a Shortcut to View Clipboard History
+
+- Open the **Automator** app on your Mac
+- Create a **Workflow**
+- Add a **"Run Shell Script"** action to the workflow
+- Ensure the following setting is applied in the workflow:
+  - **"Workflow receives 'no input' in 'any application'"**
+- For **"Run Shell Script"**, set:
+  - **Shell:** `/bin/bash`
+  - **Pass input:** `to stdin`
+- Paste the following command into the script box:
+
+```bash
+/path/to/clipboard_history.sh --show
+```
+
+- Click the **Play** button to test it. You should see the clipboard history window
+- Save the workflow
+- Open **System Settings > Keyboard > Keyboard Shortcuts...**
+- Navigate to **Services > General > Name_Of_The_Workflow**
+- Check the checkbox, then double-click the darker **"none"** box
+- Press **Command + Shift + V** to set the shortcut, then click **Done**
+
+### 5. Possible fixes for errors
+
+- Grant **"Full Disk Access"** for Terminal and Automator in your system settings
+  - Open **System Settings** and navigate to **Privacy & Security > Full Disk Access**
+  - Click on the **"+"** button and select Automator and Terminal
