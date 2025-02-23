@@ -55,7 +55,7 @@ python --version
 chmod u+x /path/to/clipboard_history.sh
 ```
 
-You can list all the files in the project folder with **ls -l**, you should see something like **-rwxr--r--** permissions.
+- You can list all the files in the project folder with **ls -l**, you should see something like **-rwxr--r--** permissions.
 
 - Running the script: Each time you restart your computer, you will need to start the program manually.
 

@@ -68,13 +68,18 @@ show_history() {
     
     # If user made a selection, find and copy the corresponding item
     if [[ "$selection" != "false" ]]; then
+        # Find the selected item and copy it to clipboard
         for ((i=1; i<=MAX_HISTORY; i++)); do
+            # Check if file exists and if the preview matches the selection
             if [[ -f "${HISTORY_FOLDER}/${i}" ]]; then
+                # Read the file content
                 content=$(cat "${HISTORY_FOLDER}/${i}")
                 preview="${content:0:100}"
+                # Truncate content for display
                 if [[ ${#content} -gt 100 ]]; then
                     preview="${preview}..."
                 fi
+                # If the preview matches the selection, copy the content to clipboard
                 if [[ "$selection" == *"$preview"* ]]; then
                     echo "$content" | pbcopy
                     break
@@ -116,6 +121,7 @@ if [[ "$1" == "--show" ]]; then
     exit 0
 fi
 
+# Clear clipboard history
 if [[ "$1" == "--clear" ]]; then
     rm -rf "$HISTORY_FOLDER"
     mkdir -p "$HISTORY_FOLDER"
@@ -137,4 +143,6 @@ fi
 
 # Show usage if no valid argument is provided
 echo "Usage: $0 [--start|--clear|--show|--stop]"
+
+# Exit with error
 exit 1
